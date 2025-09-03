@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="PT-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Login</title>
+</head>
+<h1>Seja bem-vindo</h1>
+<colo>
+
+<body>
+    <div>
+
+
+        <div class="UsuarioNome">
+            <p>Nome de usúrio</p>
+            <img src="./assests/Usuario Logo.png" alt="Logo representativa do Usuário">
+        </div>
+
+
+        <div class="UsuarioSenha">
+            <p>Digite sua senha</p>
+            <img src="./assests/Cadeado Logo.png" alt="Logo representativa de Cadeado">
+        </div>
+
+
+        <div class="EsqueceuSenha">
+            <p>Esqueceu a senha?</p>
+        </div>
+
+
+    </div>
+</body>
+    <div class="Login">
+        <p>Login</p>
+    </div>
+    <div>
+        <img src="./assests/Google Logo.png">
+        <img src="./assests/Intagram Logo.png">
+        <img src="./assests/Vector.png">
+    </div>
+</html>
