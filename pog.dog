@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dogwalker Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(90deg, #ff9800, #ff5722);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header nav {
+            margin-top: 0.5rem;
+        }
+
+        header nav a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav a:hover {
+            color: #ffe0b2;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        section h2 {
+            color: #ff5722;
+            border-bottom: 2px solid #ff9800;
+            padding-bottom: 0.5rem;
+        }
+
+        label {
+            display: block;
+            margin: 0.5rem 0 0.3rem;
+            font-weight: 600;
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #ff9800;
+            box-shadow: 0 0 5px rgba(255, 152, 0, 0.8);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(90deg, #ff9800, #ff5722);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #ff5722, #ff9800);
+        }
+
+        #petList ul, #scheduleList ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #petList ul li, #scheduleList ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f4f4f4;
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-content {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .delete-btn {
+            background: linear-gradient(90deg, #ff7961, #f44336);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(90deg, #f44336, #e53935);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dogwalker Pro</h1>
+        <nav>
+            <a href="#about">Sobre</a>
+            <a href="#cadastro">Cadastro de Pets</a>
+            <a href="#agenda">Agenda</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>Sobre o Dogwalker Pro</h2>
+            <p>
+                O <strong>Dogwalker Pro</strong> é uma ferramenta desenvolvida para facilitar o trabalho de profissionais que cuidam de pets.
+                Organize sua rotina de caminhadas e cadastre informações importantes sobre os pets que atende.
+            </p>
+        </section>
+
+        <section id="cadastro">
+            <h2>Cadastro de Pets</h2>
+            <form id="petForm">
+                <label for="petName">Nome do Pet:</label>
+                <input type="text" id="petName" required>
+                <label for="breed">Raça:</label>
+                <input type="text" id="breed" required>
+                <label for="age">Idade:</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="number" id="age" min="0" required style="flex: 2;">
+                    <select id="ageUnit" style="flex: 1;">
+                        <option value="meses">Meses</option>
+                        <option value="anos">Anos</option>
+                    </select>
+                </div>
+                <label for="notes">Necessidades Especiais:</label>
+                <textarea id="notes"></textarea>
+                <label for="healthHistory">Histórico de Saúde:</label>
+                <textarea id="healthHistory"></textarea>
+                <button type="submit">Cadastrar</button>
+            </form>
+            <div id="petList">
+                <h3>Pets Cadastrados:</h3>
+                <ul></ul>
+            </div>
+        </section>
+
+        <section id="agenda">
+            <h2>Agenda</h2>
+            <form id="scheduleForm">
+                <label for="schedulePetName">Nome do Pet:</label>
+                <select id="schedulePetName" required>
+                    <option value="" disabled selected>Selecione um pet</option>
+                </select>
+                <label for="date">Data:</label>
+                <input type="date" id="date" required>
+                <label for="time">Horário:</label>
+                <input type="time" id="time" required>
+                <label for="address">Endereço:</label>
+                <input type="text" id="address" placeholder="Digite o endereço do passeio" required>
+                <label for="scheduleNotes">Observações:</label>
+                <textarea id="scheduleNotes" placeholder="Digite alguma observação"></textarea>
+                <button type="submit">Agendar</button>
+            </form>
+            <div id="scheduleList">
+                <h3>Agendamentos:</h3>
+                <ul></ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Dogwalker Pro - Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const petForm = document.getElementById('petForm');
+            const petList = document.querySelector('#petList ul');
+            const scheduleForm = document.getElementById('scheduleForm');
+            const scheduleList = document.querySelector('#scheduleList ul');
+            const schedulePetNameSelect = document.getElementById('schedulePetName');
+
+            petForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const petName = document.getElementById('petName').value;
+                const breed = document.getElementById('breed').value;
+                const age = document.getElementById('age').value;
+                const ageUnit = document.getElementById('ageUnit').value;
+                const notes = document.getElementById('notes').value;
+                const healthHistory = document.getElementById('healthHistory').value;
+
+                const li = document.createElement('li');
+                const itemContent = document.createElement('div');
+                itemContent.className = 'item-content';
+                itemContent.innerHTML = `
+                    <strong>${petName}</strong> (${breed}, ${age} ${ageUnit})<br>
+                    <em>Necessidades Especiais:</em> ${notes || 'Nenhuma'}<br>
+                    <em>Histórico de Saúde:</em> ${healthHistory || 'Nenhum'}
+                `;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Excluir';
+
+                deleteBtn.addEventListener('click', () => {
+                    li.remove();
+                    const options = Array.from(schedulePetNameSelect.options);
+                    options.forEach((option) => {
+                        if (option.value === petName) option.remove();
+                    });
+                });
+
+                li.appendChild(itemContent);
+                li.appendChild(deleteBtn);
+                petList.appendChild(li);
+
+                const option = document.createElement('option');
+                option.value = petName;
+                option.textContent = petName;
+                schedulePetNameSelect.appendChild(option);
+
+                petForm.reset();
+            });
+
+            scheduleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const schedulePetName = schedulePetNameSelect.value;
+                const date = document.getElementById('date').value.split('-').reverse().join('/');
+                const time = document.getElementById('time').value;
+                const address = document.getElementById('address').value;
+                const scheduleNotes = document.getElementById('scheduleNotes').value;
+
+                const li = document.createElement('li');
+                const itemContent = document.createElement('div');
+                itemContent.className = 'item-content';
+                itemContent.innerHTML = `
+                    <strong>${schedulePetName}</strong> - ${date} às ${time}<br>
+                    <em>Endereço:</em> ${address}<br>
+                    <em>Observação:</em> ${scheduleNotes || 'Nenhuma'}
+                `;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Excluir';
+
+                deleteBtn.addEventListener('click', () => {
+                    li.remove();
+                });
+
+                li.appendChild(itemContent);
+                li.appendChild(deleteBtn);
+                scheduleList.appendChild(li);
+
+                scheduleForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>
