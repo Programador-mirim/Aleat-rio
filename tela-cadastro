@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Usuário</title>
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #2b7a78;
+    color: white;
+    text-align: center;
+    padding: 1em;
+}
+
+form {
+    background-color: white;
+    max-width: 500px;
+    margin: 2em auto;
+    padding: 2em;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #2b7a78;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #205d5a;
+}
+</style>
+</head>
+<body>
+<header>
+    <h2>Cadastro de Usuário</h2>
+</header>
+
+<form>
+    <input type="text" placeholder="Nome completo" required>
+    <select required>
+        <option value="">Selecione o cargo</option>
+        <option value="administrador">Administrador</option>
+        <option value="farmaceutico">Farmacêutico</option>
+        <option value="estoquista">Estoquista</option>
+    </select>
+    <input type="email" placeholder="Email" required>
+    <input type="text" placeholder="CPF" required>
+    <input type="password" placeholder="Senha" required>
+    <button type="submit">Cadastrar Usuário</button>
+</form>
+</body>
+</html>
