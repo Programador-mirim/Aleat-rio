@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Produtos</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4; margin: 0;
+}
+header {background: #2b7a78; 
+    color: white; 
+    text-align: center; 
+    padding: 1em;}
+form {background: white; 
+    max-width: 800px; 
+    margin: 2em auto; 
+    padding: 1.5em; 
+    border-radius: 8px; 
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+input, select {width: 100%; 
+    padding: 10px; 
+    margin: 8px 0; 
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+}
+button {background: #2b7a78; 
+    color: white; 
+    border: none; 
+    padding: 10px; 
+    border-radius: 5px; 
+    cursor: pointer;
+}
+button:hover {
+    background: #205d5a;
+}
+.table-container {
+    max-width: 800px; 
+    margin: 2em auto; 
+    background: white; 
+    padding: 1em; 
+    border-radius: 8px; 
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+table {
+    width: 100%; 
+    border-collapse: collapse;
+}
+th, td {
+    border-bottom: 1px solid #ddd; 
+    padding: 8px; 
+    text-align: left;
+}
+th {
+    background: #2b7a78; 
+    color: white;
+}
+</style>
+</head>
+<body>
+<header><h2>Cadastro de Produtos</h2></header>
+<form>
+<input type="text" placeholder="Nome do Produto" required>
+<input type="text" placeholder="Princípio Ativo">
+<input type="text" placeholder="Dosagem">
+<input type="text" placeholder="Unidade (ex: mg, ml)">
+<input type="text" placeholder="Lote">
+<input type="date" placeholder="Validade">
+<input type="text" placeholder="Via de Administração">
+<input type="text" placeholder="Fornecedor">
+<button type="submit">Salvar Produto</button>
+</form>
+
+
+<div class="table-container">
+<h3>Lista de Produtos</h3>
+<table>
+<tr><th>Nome</th><th>Quantidade</th><th>Validade</th><th>Ações</th></tr>
+<tr><td>Amoxicilina</td><td>20</td><td>2026-05-10</td><td><button>Editar</button> <button>Excluir</button></td></tr>
+</table>
+</div>
+</body>
+</html>
