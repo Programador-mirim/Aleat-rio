@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu Principal</title>
+<style>
+body {
+    font-family: Arial, sans-serif; 
+    background: #f4f4f4; 
+    margin: 0;
+}
+header {
+    background: #2b7a78; 
+    color: white; 
+    padding: 1em; 
+    text-align: center;
+}
+main {
+    max-width: 800px; 
+    margin: 2em auto;
+}
+nav a {
+    display: block; 
+    background: white; 
+    color: #2b7a78; 
+    text-decoration: none; 
+    padding: 1em; 
+    margin: 10px 0; 
+    border-radius: 5px; 
+    text-align: center; 
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+nav a:hover {
+    background: #205d5a; 
+    color: white;
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Sistema de Estoque Veterinário</h1>
+</header>
+<main>
+<nav>
+<a href="produtos.html">Gerenciar Produtos</a>
+<a href="movimentacoes.html">Movimentações</a>
+<a href="relatorios.html">Relatórios</a>
+<a href="alertas.html">Alertas de Vencimento</a>
+<a href="usuarios.html">Usuários</a>
+</nav>
+</main>
+</body>
+</html>
