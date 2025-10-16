@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Dinâmico de Estoque</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: linear-gradient(90deg, #4f46e5, #06b6d4);
+      padding: 14px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    nav a { color: white; text-decoration: none; margin: 0 10px; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+    }
+    .sidebar {
+      background: white;
+      border-right: 1px solid #e2e8f0;
+      padding: 20px;
+    }
+    .filters button {
+      display: block;
+      width: 100%;
+      margin: 6px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #f1f5f9;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .filters button:hover { background: #e2e8f0; }
+    .content { padding: 20px; }
+    .cards { display: flex; gap: 16px; margin-bottom: 20px; }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      flex: 1;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .card h3 { font-size: 14px; color: #64748b; }
+    .card p { font-size: 22px; font-weight: 700; }
+    .table-wrap {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: left; }
+    thead th { border-bottom: 2px solid #e2e8f0; }
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .ok { background: #dcfce7; color: #166534; }
+    .low { background: #fef9c3; color: #92400e; }
+    .expired { background: #fee2e2; color: #991b1b; }
+    .actions { text-align: right; }
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .delete-btn:hover { background: #dc2626; }
+    .search-box {
+      margin-bottom: 10px;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .add-btn {
+      margin: 10px 0;
+      padding: 10px 14px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .add-btn:hover { background: #4338ca; }
+
+    /* ===== Modal ===== */
+    .modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none; justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: white; padding: 20px; border-radius: 12px;
+      width: 90%; max-width: 400px;
+    }
+    .modal-content h2 { margin-bottom: 10px; }
+    .modal-content input, .modal-content select {
+      width: 100%; padding: 10px; margin: 8px 0;
+      border: 1px solid #cbd5e1; border-radius: 8px;
+    }
+    .modal-content button {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .close-btn { background: #64748b; color: white; }
+    .save-btn { background: #4f46e5; color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Painel de Estoque</h1>
+    <nav>
+      <a href="#">Dashboard</a>
+      <a href="#">Produtos</a>
+      <a href="#">Relatórios</a>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <h3>Filtros</h3>
+      <div class="filters">
+        <button onclick="filterStatus('all')">Todos</button>
+        <button onclick="filterStatus('ok')">OK</button>
+        <button onclick="filterStatus('low')">Crítico</button>
+        <button onclick="filterStatus('expired')">Vencidos</button>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div class="cards">
+        <div class="card"><h3>Total</h3><p id="totalCount">0</p></div>
+        <div class="card"><h3>Baixo Estoque</h3><p id="lowCount">0</p></div>
+        <div class="card"><h3>Vencidos</h3><p id="expiredCount">0</p></div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="search-box">
+          <input type="text" id="search" placeholder="Buscar produto..." onkeyup="searchTable()">
+        </div>
+        <button class="add-btn" onclick="openModal()">➕ Adicionar Produto</button>
+        <table id="productTable">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th>Qtd</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Novo Produto</h2>
+      <input type="text" id="name" placeholder="Nome do produto">
+      <input type="text" id="category" placeholder="Categoria">
+      <input type="number" id="qty" placeholder="Quantidade">
+      <select id="status">
+        <option value="ok">OK</option>
+        <option value="low">Crítico</option>
+        <option value="expired">Vencido</option>
+      </select>
+      <button class="save-btn" onclick="addProduct()">Salvar</button>
+      <button class="close-btn" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    const tableBody = document.querySelector("#productTable tbody");
+    const totalCount = document.getElementById("totalCount");
+    const lowCount = document.getElementById("lowCount");
+    const expiredCount = document.getElementById("expiredCount");
+    const modal = document.getElementById("modal");
+
+    let products = [
+      { name: "Paracetamol 500mg", category: "Analgésico", qty: 120, status: "ok" },
+      { name: "Amoxicilina 250mg", category: "Antibiótico", qty: 6, status: "low" },
+      { name: "Insulina NPH", category: "Endócrino", qty: 2, status: "expired" }
+    ];
+
+    function renderTable(data = products) {
+      tableBody.innerHTML = "";
+      data.forEach((p, index) => {
+        const row = `
+          <tr>
+            <td>${p.name}</td>
+            <td>${p.category}</td>
+            <td>${p.qty}</td>
+            <td><span class="badge ${p.status}">${statusText(p.status)}</span></td>
+            <td class="actions"><button class="delete-btn" onclick="deleteProduct(${index})">Excluir</button></td>
+          </tr>`;
+        tableBody.insertAdjacentHTML("beforeend", row);
+      });
+      updateCounts();
+    }
+
+    function statusText(status) {
+      if (status === "ok") return "OK";
+      if (status === "low") return "Crítico";
+      if (status === "expired") return "Vencido";
+    }
+
+    function updateCounts() {
+      totalCount.textContent = products.length;
+      lowCount.textContent = products.filter(p => p.status === "low").length;
+      expiredCount.textContent = products.filter(p => p.status === "expired").length;
+    }
+
+    function searchTable() {
+      const term = document.getElementById("search").value.toLowerCase();
+      const filtered = products.filter(p =>
+        p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term)
+      );
+      renderTable(filtered);
+    }
+
+    function filterStatus(status) {
+      if (status === "all") return renderTable();
+      renderTable(products.filter(p => p.status === status));
+    }
+
+    function deleteProduct(index) {
+      products.splice(index, 1);
+      renderTable();
+    }
+
+    function openModal() { modal.style.display = "flex"; }
+    function closeModal() { modal.style.display = "none"; }
+
+    function addProduct() {
+      const name = document.getElementById("name").value;
+      const category = document.getElementById("category").value;
+      const qty = document.getElementById("qty").value;
+      const status = document.getElementById("status").value;
+
+      if (!name || !category || !qty) return alert("Preencha todos os campos!");
+
+      products.push({ name, category, qty: parseInt(qty), status });
+      renderTable();
+      closeModal();
+    }
+
+    // inicializa
+    renderTable();
+  </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sistema Completo — Estoque | Dashboard</title>
+  <meta name="description" content="Sistema completo de exemplo para gerenciamento de produtos e estoque — HTML, CSS e JavaScript puro" />
+  <style>
+    /* ===== Reset ===== */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:linear-gradient(180deg,#eef2ff 0%, #f8fafc 100%); color:#0f172a}
+
+    /* ===== App layout ===== */
+    .app{max-width:1200px;margin:28px auto;padding:18px}
+    .card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 12px 30px rgba(2,6,23,0.06)}
+
+    /* ===== Header / Nav ===== */
+    header.app-header{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:14px;background:linear-gradient(90deg,#6366f1,#06b6d4);color:#fff}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#fb7185,#f97316);display:flex;align-items:center;justify-content:center;font-weight:900;color:white}
+    nav.main-nav{margin-left:auto;display:flex;gap:8px}
+    nav.main-nav a{color:rgba(255,255,255,0.92);text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:700}
+    nav.main-nav a.active{background:rgba(255,255,255,0.12)}
+    .user-chip{display:flex;gap:10px;align-items:center}
+
+    /* ===== Layout columns ===== */
+    .layout{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
+    .sidebar{display:flex;flex-direction:column;gap:14px}
+    .sidebar .profile{display:flex;gap:12px;align-items:center}
+    .avatar{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#06b6d4);color:white;display:flex;align-items:center;justify-content:center;font-weight:800}
+    .muted{color:#6b7280}
+
+    /* ===== Cards grid ===== */
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .small-card{background:linear-gradient(180deg,#fff,#fbfdff);padding:14px;border-radius:12px}
+    .small-card h4{font-size:13px;color:#475569;margin-bottom:8px}
+    .small-card p{font-size:20px;font-weight:800}
+
+    /* ===== Table ===== */
+    .table-actions{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+    .search input{padding:10px;border-radius:10px;border:1px solid #e6edf3;width:260px}
+    .btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:800}
+    .btn.primary{background:linear-gradient(90deg,#6366f1,#06b6d4);color:white}
+    .btn.ghost{background:transparent;border:1px solid #e6edf3}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    thead th{font-size:13px;text-align:left;padding:12px;border-bottom:1px solid #f1f5f9;color:#475569}
+    tbody td{padding:12px;border-bottom:1px solid #f8fafc}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+    .ok{background:#ecfdf5;color:#065f46}
+    .low{background:#fff7ed;color:#92400e}
+    .expired{background:#fef2f2;color:#991b1b}
+
+    /* ===== Modal ===== */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:center;justify-content:center;padding:18px}
+    .modal.show{display:flex}
+    .modal-card{background:white;border-radius:12px;padding:18px;max-width:720px;width:100%;box-shadow:0 30px 80px rgba(2,6,23,0.35)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field input, .field select, .field textarea{padding:10px;border-radius:10px;border:1px solid #e6edf3}
+
+    /* ===== Charts ===== */
+    .charts{display:grid;grid-template-columns:1fr 320px;gap:12px}
+    .chart-card{padding:12px;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff)}
+
+    /* ===== Responsive ===== */
+    @media (max-width:980px){.layout{grid-template-columns:1fr} .cards{grid-template-columns:repeat(2,1fr)} .charts{grid-template-columns:1fr}}
+    @media (max-width:600px){.cards{grid-template-columns:1fr} nav.main-nav{display:none} .search input{width:140px}}
+
+    /* small niceties */
+    .right{margin-left:auto}
+    .muted-sm{font-size:13px;color:#94a3b8}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- HEADER -->
+    <header class="app-header card">
+      <div class="brand">
+        <div class="logo">PD</div>
+        <div>
+          <div style="font-weight:900">Painel Farma — Sistema</div>
+          <div class="muted-sm">Controle de produtos, estoque e relatórios</div>
+        </div>
+      </div>
+
+      <nav class="main-nav">
+        <a href="#/dashboard" data-route="dashboard" class="active">Dashboard</a>
+        <a href="#/produtos" data-route="produtos">Produtos</a>
+        <a href="#/cadastro" data-route="cadastro">Cadastro</a>
+        <a href="#/relatorios" data-route="relatorios">Relatórios</a>
+      </nav>
+
+      <div class="user-chip">
+        <div class="muted-sm">Olá, <strong id="currentUser">Convidado</strong></div>
+        <button class="btn ghost" id="logoutBtn" style="display:none">Sair</button>
+      </div>
+    </header>
+
+    <!-- VIEWS (SPA via hash routing) -->
+    <main class="layout">
+      <!-- Sidebar (shared) -->
+      <aside class="sidebar card" id="sidebar">
+        <div class="profile">
+          <div class="avatar">SC</div>
+          <div>
+            <div style="font-weight:800">Sammy Calebe</div>
+            <div class="muted">Administrador</div>
+          </div>
+        </div>
+
+        <div class="muted-sm">Atalhos</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn ghost" onclick="navigate('#/cadastro')">➕ Novo Produto</button>
+          <button class="btn ghost" onclick="exportCSV()">💾 Exportar CSV</button>
+          <button class="btn ghost" onclick="importSample()">🔁 Importar Exemplo</button>
+        </div>
+
+        <div style="margin-top:8px">
+          <label class="muted-sm">Pesquisar global</label>
+          <input id="globalSearch" placeholder="Pesquisar..." style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6edf3;margin-top:6px" />
+        </div>
+      </aside>
+
+      <!-- Dynamic view container -->
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <!-- Dashboard view -->
+        <div id="view-dashboard" class="card" data-view>
+          <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+            <div>
+              <h2 style="margin-bottom:6px">Dashboard</h2>
+              <div class="muted-sm">Visão geral do estoque</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="search"><input id="dashSearch" placeholder="Buscar..." style="padding:10px;border-radius:10px;border:1px solid #e6edf3;width:240px" /></div>
+              <button class="btn primary" onclick="navigate('#/cadastro')">+ Produto</button>
+            </div>
+          </div>
+
+          <div class="cards" style="margin-top:14px">
+            <div class="small-card">
+              <h4>Total de produtos</h4>
+              <p id="stat-total">0</p>
+            </div>
+            <div class="small-card">
+              <h4>Baixo estoque</h4>
+              <p id="stat-low">0</p>
+            </div>
+            <div class="small-card">
+              <h4>Vencidos</h4>
+              <p id="stat-expired">0</p>
+            </div>
+          </div>
+
+          <div class="charts" style="margin-top:12px">
+            <div class="chart-card">
+              <h4>Distribuição por categoria</h4>
+              <canvas id="chartCategory" width="600" height="300"></canvas>
+            </div>
+            <div class="chart-card">
+              <h4>Resumo</h4>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+                <div><strong>Total:</strong> <span id="miniTotal">0</span></div>
+                <div><strong>Crítico:</strong> <span id="miniLow">0</span></div>
+                <div><strong>Vencidos:</strong> <span id="miniExpired">0</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap" style="margin-top:16px">
+            <h3 style="margin-bottom:10px">Produtos recentes</h3>
+            <table id="table-recent">
+              <thead>
+                <tr><th>Produto</th><th>Categoria</th><th>Qtd</th><th>Vencimento</th><th>Status</th><th style="text-align:right">Ações</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Produtos view -->
+        <div id="view-produtos" class="card" data-view style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2>Produtos</h2>
+              <div class="muted-sm">Gerencie todos os produtos cadastrados</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <select id="filterStatus" onchange="applyFilter()" style="padding:8px;border-radius:8px;border:1px solid #e6edf3">
+                <option value="all">Todos</option>
+                <option value="ok">OK</option>
+                <option value="low">Crítico</option>
+                <option value="expired">Vencido</option>
+              </select>
+              <input id="prodSearch" placeholder="Pesquisar produto..." style="padding:10px;border-radius:10px;border:1px solid #e6edf3" />
+              <button class="btn primary" onclick="navigate('#/cadastro')">+ Novo</button>
+            </div>
+          </div>
+
+          <div class="table-wrap" style="margin-top:12px">
+            <table id="table-all">
+              <thead>
+                <tr><th>Produto</th><th>Categoria</th><th>Qtd</th><th>Lote</th><th>Vencimento</th><th>Status</th><th style="text-align:right">Ações</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Cadastro view -->
+        <div id="view-cadastro" class="card" data-view style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2>Cadastro / Edição de Produto</h2>
+              <div class="muted-sm">Preencha os dados do produto</div>
+            </div>
+            <div>
+              <button class="btn ghost" onclick="navigate('#/produtos')">Voltar</button>
+            </div>
+          </div>
+
+          <form id="formProduct" style="margin-top:12px">
+            <input type="hidden" id="editId" />
+            <div class="form-grid">
+              <div class="field"><label>Nome</label><input id="p_name" required /></div>
+              <div class="field"><label>Categoria</label><input id="p_category" /></div>
+              <div class="field"><label>Quantidade</label><input id="p_qty" type="number" min="0" /></div>
+              <div class="field"><label>Lote</label><input id="p_batch" /></div>
+              <div class="field"><label>Vencimento</label><input id="p_exp" type="date" /></div>
+              <div class="field"><label>Observações</label><textarea id="p_notes"></textarea></div>
+            </div>
+
+            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+              <button type="button" class="btn ghost" onclick="resetForm()">Limpar</button>
+              <button type="submit" class="btn primary">Salvar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Relatórios view -->
+        <div id="view-relatorios" class="card" data-view style="display:none">
+          <h2>Relatórios</h2>
+          <div class="muted-sm">Exportar e visualizar dados</div>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="btn primary" onclick="exportCSV()">Exportar CSV</button>
+            <button class="btn ghost" onclick="downloadJSON()">Exportar JSON</button>
+          </div>
+          <div style="margin-top:12px">
+            <h4>Preview (últimos 10 registros)</h4>
+            <pre id="reportPreview" style="background:#0f172a;color:#fff;padding:12px;border-radius:8px;max-height:240px;overflow:auto"></pre>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal (confirm delete) -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-card">
+      <h3>Confirmar ação</h3>
+      <p class="muted-sm">Deseja realmente excluir este produto?</p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+        <button class="btn ghost" onclick="closeConfirm()">Cancelar</button>
+        <button class="btn primary" id="confirmDeleteBtn">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*******************
+      Simple SPA router
+    *******************/
+    const views = document.querySelectorAll('[data-view]');
+    function navigate(hash){ window.location.hash = hash; }
+    function setActiveRoute(){
+      const hash = location.hash || '#/dashboard';
+      document.querySelectorAll('nav.main-nav a').forEach(a=>a.classList.toggle('active', a.getAttribute('href')===hash));
+      views.forEach(v=>v.style.display = v.id === ('view-' + hash.replace('#/','')) ? 'block' : 'none');
+      // show/hide logout
+      document.getElementById('logoutBtn').style.display = isAuthenticated()? 'inline-block' : 'none';
+      document.getElementById('currentUser').textContent = getCurrentUserName();
+      renderActiveView(hash);
+    }
+    window.addEventListener('hashchange', setActiveRoute);
+
+    /*******************
+      Auth (fake, localStorage)
+    *******************/
+    function getCurrentUserName(){ const u = localStorage.getItem('lastUser'); return u?u:'Convidado'; }
+    function isAuthenticated(){ return !!localStorage.getItem('lastUser'); }
+    document.getElementById('logoutBtn').addEventListener('click', ()=>{ localStorage.removeItem('lastUser'); setActiveRoute(); alert('Desconectado'); });
+
+    /*******************
+      Products storage & seed
+    *******************/
+    const STORAGE_KEY = 'app_products_v1';
+    function loadProducts(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw){ const seed = [
+        {id:idNow(), name:'Paracetamol 500mg', category:'Analgésico', qty:120, batch:'A12', exp:'2025-11-30', notes:''},
+        {id:idNow(), name:'Amoxicilina 250mg', category:'Antibiótico', qty:6, batch:'B73', exp:'2024-05-10', notes:''},
+        {id:idNow(), name:'Insulina NPH', category:'Endócrino', qty:2, batch:'D99', exp:'2024-01-15', notes:''},
+        {id:idNow(), name:'Vitamina C 500mg', category:'Suplemento', qty:340, batch:'C21', exp:'2026-02-05', notes:''}
+      ]; localStorage.setItem(STORAGE_KEY, JSON.stringify(seed)); return seed; }
+      try{ return JSON.parse(raw); }catch(e){ return []; }
+    }
+    function saveProducts(items){ localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+    function idNow(){ return 'p_' + Math.random().toString(36).slice(2,9); }
+
+    /*******************
+      UI render functions
+    *******************/
+    function renderActiveView(hash){
+      if(hash.startsWith('#/dashboard')) renderDashboard();
+      if(hash.startsWith('#/produtos')) renderProducts();
+      if(hash.startsWith('#/cadastro')) fillFormForEdit();
+      if(hash.startsWith('#/relatorios')) renderReports();
+    }
+
+    // DASHBOARD
+    function renderDashboard(){
+      const items = loadProducts();
+      const total = items.length;
+      const low = items.filter(p=>Number(p.qty)<=5).length;
+      const expired = items.filter(p=>p.exp && new Date(p.exp) < startOfDay(new Date())).length;
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-low').textContent = low;
+      document.getElementById('stat-expired').textContent = expired;
+      document.getElementById('miniTotal').textContent = total;
+      document.getElementById('miniLow').textContent = low;
+      document.getElementById('miniExpired').textContent = expired;
+
+      // recent table
+      const tbody = document.querySelector('#table-recent tbody'); tbody.innerHTML='';
+      items.slice().reverse().slice(0,10).forEach(p=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${escapeHtml(p.name)}</strong></td><td>${escapeHtml(p.category||'-')}</td><td>${p.qty}</td><td>${p.exp||'-'}</td><td>${statusBadge(p)}</td><td style=\"text-align:right\"><button class=\"btn ghost\" onclick=\"editById('${p.id}')\">Editar</button> <button class=\"btn ghost\" onclick=\"confirmDelete('${p.id}')\">Excluir</button></td>`;
+        tbody.appendChild(tr);
+      });
+
+      renderCategoryChart(items);
+    }
+
+    // PRODUCTS
+    function renderProducts(){
+      const items = loadProducts();
+      const tbody = document.querySelector('#table-all tbody'); tbody.innerHTML='';
+      const q = document.getElementById('prodSearch').value?.toLowerCase()||'';
+      const filter = document.getElementById('filterStatus').value;
+      items.filter(p=>{ if(filter!=='all'){ if(getStatus(p)!==filter) return false } return (p.name+p.category+p.batch).toLowerCase().includes(q); }).forEach(p=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${escapeHtml(p.name)}</strong></td><td>${escapeHtml(p.category||'-')}</td><td>${p.qty}</td><td>${escapeHtml(p.batch||'-')}</td><td>${p.exp||'-'}</td><td>${statusBadge(p)}</td><td style=\"text-align:right\"><button class=\"btn ghost\" onclick=\"editById('${p.id}')\">Editar</button> <button class=\"btn ghost\" onclick=\"confirmDelete('${p.id}')\">Excluir</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function applyFilter(){ renderProducts(); }
+    document.getElementById('prodSearch').addEventListener('input', applyFilter);
+
+    // FORM
+    function resetForm(){ document.getElementById('formProduct').reset(); document.getElementById('editId').value=''; }
+    function fillFormForEdit(){ const id = new URLSearchParams(location.hash.replace('#/cadastro','')).get('id') || document.getElementById('editId').value; if(id){ const items = loadProducts(); const p = items.find(x=>x.id===id); if(p){ document.getElementById('editId').value = p.id; document.getElementById('p_name').value = p.name; document.getElementById('p_category').value = p.category; document.getElementById('p_qty').value = p.qty; document.getElementById('p_batch').value = p.batch; document.getElementById('p_exp').value = p.exp || ''; document.getElementById('p_notes').value = p.notes || ''; } } }
+
+    document.getElementById('formProduct').addEventListener('submit', function(e){ e.preventDefault(); const id = document.getElementById('editId').value; const name = document.getElementById('p_name').value.trim(); const category = document.getElementById('p_category').value.trim(); const qty = Number(document.getElementById('p_qty').value||0); const batch = document.getElementById('p_batch').value.trim(); const exp = document.getElementById('p_exp').value; const notes = document.getElementById('p_notes').value.trim(); if(!name) return alert('Nome obrigatório'); let items = loadProducts(); if(id){ const i = items.findIndex(x=>x.id===id); if(i>-1){ items[i] = {...items[i], name, category, qty, batch, exp, notes }; saveProducts(items); alert('Produto atualizado'); navigate('#/produtos'); renderProducts(); } } else { const obj = {id:idNow(), name, category, qty, batch, exp, notes}; items.push(obj); saveProducts(items); alert('Produto salvo'); navigate('#/produtos'); renderProducts(); } renderDashboard(); });
+
+    // Edit / Delete helpers
+    function editById(id){ navigate('#/cadastro'); setTimeout(()=>{ document.getElementById('editId').value=id; fillFormForEdit(); },120); }
+    function confirmDelete(id){ document.getElementById('confirmModal').classList.add('show'); document.getElementById('confirmDeleteBtn').onclick = ()=>{ deleteById(id); closeConfirm(); }; }
+    function closeConfirm(){ document.getElementById('confirmModal').classList.remove('show'); }
+    function deleteById(id){ let items = loadProducts(); items = items.filter(x=>x.id!==id); saveProducts(items); renderProducts(); renderDashboard(); }
+
+    // Reports
+    function renderReports(){ const items = loadProducts(); document.getElementById('reportPreview').textContent = JSON.stringify(items.slice(-10), null, 2); }
+    function exportCSV(){ const items = loadProducts(); if(!items.length){ alert('Não há dados para exportar'); return; } const keys = ['id','name','category','qty','batch','exp','notes']; const rows = [keys.join(',')].concat(items.map(r=>keys.map(k=>`"${String(r[k]||'').replace(/"/g,'""')}"`).join(','))); const csv = rows.join('\n'); const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'produtos.csv'; a.click(); URL.revokeObjectURL(url); }
+    function downloadJSON(){ const items = loadProducts(); const blob = new Blob([JSON.stringify(items,null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='produtos.json'; a.click(); URL.revokeObjectURL(url); }
+
+    // Simple import example
+    function importSample(){ const sample = [
+      {id:idNow(),name:'Soro Fisiológico 0.9%',category:'Soluções',qty:40,batch:'S01',exp:'2026-01-01',notes:''},
+      {id:idNow(),name:'Ácido Fólico 5mg',category:'Suplemento',qty:15,batch:'S02',exp:'2025-08-12',notes:''}
+    ]; const items = loadProducts().concat(sample); saveProducts(items); alert('Exemplo importado'); renderProducts(); renderDashboard(); }
+
+    // Helpers
+    function startOfDay(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+    function getStatus(p){ if(p.exp && new Date(p.exp) < startOfDay(new Date())) return 'expired'; if(Number(p.qty) <= 5) return 'low'; return 'ok'; }
+    function statusBadge(p){ const s = getStatus(p); return `<span class=\"badge ${s}\">${s==='ok'?'OK':s==='low'?'Crítico':'Vencido'}</span>`; }
+    function escapeHtml(str){ return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // Mini charts (vanilla canvas)
+    function renderCategoryChart(items){
+      const canvas = document.getElementById('chartCategory');
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.clientWidth * devicePixelRatio; canvas.height = canvas.clientHeight * devicePixelRatio; ctx.scale(devicePixelRatio, devicePixelRatio);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const counts = {};
+      items.forEach(p=>{ const k = p.category||'Outros'; counts[k] = (counts[k]||0)+1; });
+      const cats = Object.keys(counts);
+      const vals = cats.map(c=>counts[c]);
+      const total = vals.reduce((a,b)=>a+b,0)||1;
+      // draw simple donut
+      let start = -Math.PI/2; const centerX = canvas.clientWidth/2, centerY=150, radius=80; let i=0;
+      const palette = ['#6366f1','#06b6d4','#f97316','#fb7185','#10b981','#f59e0b'];
+      cats.forEach((c,idx)=>{
+        const val = vals[idx]; const angle = val/total * Math.PI*2; ctx.beginPath(); ctx.moveTo(centerX,centerY); ctx.arc(centerX,centerY,radius,start,start+angle); ctx.closePath(); ctx.fillStyle = palette[idx % palette.length]; ctx.fill(); start += angle; i++;
+      });
+      // legend
+      ctx.font = '13px system-ui'; let y = 20; cats.forEach((c,idx)=>{ ctx.fillStyle = palette[idx % palette.length]; ctx.fillRect(20,y,12,12); ctx.fillStyle = '#0f172a'; ctx.fillText(`${c} (${counts[c]})`, 40, y+11); y+=22; });
+    }
+
+    // Search handlers
+    document.getElementById('dashSearch').addEventListener('input', (e)=>{ const term = e.target.value.toLowerCase(); const items = loadProducts().filter(p=> (p.name+p.category+p.batch).toLowerCase().includes(term)); const tbody = document.querySelector('#table-recent tbody'); tbody.innerHTML=''; items.slice().reverse().slice(0,10).forEach(p=>{ const tr = document.createElement('tr'); tr.innerHTML = `<td><strong>${escapeHtml(p.name)}</strong></td><td>${escapeHtml(p.category||'-')}</td><td>${p.qty}</td><td>${p.exp||'-'}</td><td>${statusBadge(p)}</td><td style="text-align:right"><button class="btn ghost" onclick="editById('${p.id}')">Editar</button> <button class="btn ghost" onclick="confirmDelete('${p.id}')">Excluir</button></td>`; tbody.appendChild(tr); }); });
+
+    // Global search box (sidebar)
+    document.getElementById('globalSearch').addEventListener('input', (e)=>{ const term = e.target.value.toLowerCase(); if(!term) return setActiveRoute(); // do nothing if empty
+      // quick filter navigate to products
+      navigate('#/produtos'); setTimeout(()=>{ document.getElementById('prodSearch').value = term; renderProducts(); },120);
+    });
+
+    // simple authentication demo: ask for username on first load
+    (function ensureUser(){ if(!localStorage.getItem('lastUser')){ const name = prompt('Informe seu nome (ex: Admin):','Sammy Calebe'); if(name) localStorage.setItem('lastUser', name); } })();
+
+    // init
+    setActiveRoute();
+
+    // expose some functions for inline handlers
+    window.navigate = navigate; window.exportCSV = exportCSV; window.importSample = importSample; window.editById = editById; window.confirmDelete = confirmDelete; window.closeConfirm = closeConfirm; window.deleteById = deleteById;
+  </script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Estoque - Versão CSS Avançado</title>
+  <style>
+    /* ===== Reset ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== Header ===== */
+    header {
+      background: linear-gradient(90deg, #4f46e5, #06b6d4);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    nav a:hover, nav a.active {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* ===== Layout ===== */
+    main {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      flex: 1;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      background: white;
+      border-right: 1px solid #e2e8f0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f97316, #ef4444);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 18px;
+    }
+
+    .profile-info {
+      font-size: 14px;
+    }
+
+    .profile-info strong {
+      display: block;
+    }
+
+    .filters button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .filters button:hover {
+      background: #f1f5f9;
+    }
+
+    /* ===== Content ===== */
+    .content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* ===== Table ===== */
+    .table-wrap {
+      background: white;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid #e2e8f0;
+      color: #334155;
+      font-size: 14px;
+    }
+
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+    }
+
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .low {
+      background: #fef9c3;
+      color: #92400e;
+    }
+
+    .expired {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Painel de Estoque</h1>
+    <nav>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Produtos</a>
+      <a href="#">Estoque</a>
+      <a href="#">Relatórios</a>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <div class="profile">
+        <div class="avatar">SC</div>
+        <div class="profile-info">
+          <strong>Sammy Calebe</strong>
+          <span>Admin</span>
+        </div>
+      </div>
+      <div class="filters">
+        <button>Todos</button>
+        <button>Disponíveis</button>
+        <button>Baixo estoque</button>
+        <button>Vencidos</button>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div class="cards">
+        <div class="card">
+          <h3>Total de Produtos</h3>
+          <p>1.254</p>
+        </div>
+        <div class="card">
+          <h3>Baixo Estoque</h3>
+          <p>237</p>
+        </div>
+        <div class="card">
+          <h3>Vencidos</h3>
+          <p>14</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <h3 style="margin-bottom:12px">Produtos</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th>Quantidade</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Paracetamol 500mg</td>
+              <td>Analgésico</td>
+              <td>120</td>
+              <td><span class="badge ok">OK</span></td>
+            </tr>
+            <tr>
+              <td>Amoxicilina 250mg</td>
+              <td>Antibiótico</td>
+              <td>6</td>
+              <td><span class="badge low">Crítico</span></td>
+            </tr>
+            <tr>
+              <td>Insulina NPH</td>
+              <td>Endócrino</td>
+              <td>2</td>
+              <td><span class="badge expired">Vencido</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
