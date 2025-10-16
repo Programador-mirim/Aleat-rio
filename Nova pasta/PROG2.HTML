@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de estoque</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        nav {
+            background-color: #333;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        section {
+            padding: 20px;
+            display: none;
+        }
+        section.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        input, select, button {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Gerenciamento de estoque</h1>
+    <h2>Olá, "Nome do Usuário"</h2>
+</header>
+
+<nav>
+    <a href="javascript:void(0)" onclick="showSection('usuarios')">Usuários</a>
+    <a href="javascript:void(0)" onclick="showSection('produtos')">Cadastro de Produtos</a>
+    <a href="javascript:void(0)" onclick="showSection('estoque')">Estoque</a>
+</nav>
+
+<section id="usuarios" class="active">
+    <h2>Usuários</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>Senha</th>
+                <th>Permissão</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Usuário 1</td>
+                <td>Senha 1</td>
+                <td>Permissão 1</td>
+            </tr>
+            <tr>
+                <td>Usuário 2</td>
+                <td>Senha 2</td>
+                <td>Permissão 2</td>
+            </tr>
+            <tr>
+                <td>Usuário 3</td>
+                <td>Senha 3</td>
+                <td>Permissão 3</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section id="produtos">
+    <h2>Cadastro de Produtos</h2>
+    <form>
+        <label for="produto">Produto:</label>
+        <input type="text" id="produto" name="produto" required>
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" id="quantidade" name="quantidade" required>
+        <label for="preco">Preço:</label>
+        <input type="number" step="0.01" id="preco" name="preco" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+</section>
+
+<section id="estoque">
+    <h2>Estoque</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Produto 1</td>
+                <td>10</td>
+                <td>R$ 10.00</td>
+            </tr>
+            <tr>
+                <td>Produto 2</td>
+                <td>5</td>
+                <td>R$ 5.00</td>
+            </tr>
+            <tr>
+                <td>Produto 3</td>
+                <td>15</td>
+                <td>R$ 15.00</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<script>
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(sectionId).classList.add('active');
+    }
+</script>
+</body>
+</html>
