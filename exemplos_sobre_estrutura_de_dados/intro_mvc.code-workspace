@@ -1,0 +1,47 @@
+{
+	"folders": [
+		{
+			"path": "../../../Downloads/intro_mvc/intro_mvc"
+		},
+		{
+			"path": "../../Pesadelo"
+		},
+		{
+			"path": "../../../Downloads/html2"
+		},
+		{
+			"path": "../../../Downloads/Java-script"
+		},
+		{
+			"path": "../produto"
+		},
+		{
+			"path": "../proj_carro"
+		},
+		{
+			"path": "../sobre_try_except"
+		},
+		{
+			"path": "../venv"
+		},
+		{
+			"path": "../classes_abstratas"
+		},
+		{
+			"path": "../estudo_grafico"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../heranca"
+		},
+		{
+			"path": "../overload"
+		},
+		{
+			"path": "../polimorfismo"
+		}
+	],
+	"settings": {}
+}
